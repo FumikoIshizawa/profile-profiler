@@ -3,7 +3,7 @@ Profile Profiles allows to show the user's profile clearly in articles.
 
 # Use
 ## Setting
-From setting page, register html and styles. You can use [img], [name] and [profile] in HTML.
+From setting page, register html and styles. You can use %img%, %name% and %profile% in HTML.
 
 ## Article
 ```
