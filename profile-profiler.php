@@ -21,24 +21,46 @@ License: GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-// 参考になりそうなURL
-// https://plugins.trac.wordpress.org/browser/pz-linkcard/tags/2.0.3#js
 class Profile_Profiler {
   public function __construct() {
-    add_action('admin_menu', array($this, 'add_menu'));
-
-    // shortcode
-    // http://www.webopixel.net/wordpress/53.html
+    add_action('admin_menu', array($this, 'pp_add_plugin_menu'));
+    add_shortcode('pprofile', 'create_profile');
   }
 
-  public function add_menu() {
+  public function create_profile($atts, $content = null) {
+    extract(shortcode_atts(array(
+        'name' => 0,
+        'img_url' => 0,
+    ), $atts));
+
+    $html = get_site_option('pp_html');
+    $html = str_replace("[img]", "<img src='" + $img_url + "'>", $html);
+    $html = str_replace("[name]", $name, $html);
+    $html = str_replace("[profile]", $content, $html);
+
+    return $html;
+  }
+
+  function pp_add_plugin_menu() {
     add_options_page(
       'Profile Profiler',
       'Profile Profiler',
       'manage_options',
       'profile_profiler',
-      'pp_show_plugin_page'
+      'Profile_Profiler::pp_show_plugin_page'
     );
+    register_setting(
+      'pp-group',
+      'pp_html',
+      'Profile_Profiled::pp_register_html'
+    );
+  }
+
+  public static function pp_show_plugin_page() {
+    include_once('views/pp_settings.php');
+  }
+
+  public static function pp_register_html() {
   }
 }
 
