@@ -24,19 +24,21 @@ License: GPL2
 class Profile_Profiler {
   public function __construct() {
     add_action('admin_menu', array($this, 'pp_add_plugin_menu'));
-    add_shortcode('pprofile', 'create_profile');
+    add_shortcode('pprofile', 'Profile_Profiler::create_profile');
   }
 
-  public function create_profile($atts, $content = null) {
+  public static function create_profile($atts, $content = null) {
+    $html = get_site_option('pp_html');
+    $default_img = get_site_option('pp_default_img');
+
     extract(shortcode_atts(array(
-        'name' => 0,
-        'img_url' => 0,
+        'name' => '',
+        'img_url' => $default_img,
     ), $atts));
 
-    $html = get_site_option('pp_html');
-    $html = str_replace("[img]", "<img src='" + $img_url + "'>", $html);
-    $html = str_replace("[name]", $name, $html);
-    $html = str_replace("[profile]", $content, $html);
+    $html = str_replace("%img%", "<img src='".get_template_directory_uri()."/".$img_url."'>", $html);
+    $html = str_replace("%name%", $name, $html);
+    $html = str_replace("%profile%", $content, $html);
 
     return $html;
   }
@@ -54,6 +56,11 @@ class Profile_Profiler {
       'pp_html',
       'Profile_Profiled::pp_register_html'
     );
+    register_setting(
+      'pp-group',
+      'pp_default_img',
+      'Profile_Profiled::pp_register_default_img'
+    );
   }
 
   public static function pp_show_plugin_page() {
@@ -61,6 +68,8 @@ class Profile_Profiler {
   }
 
   public static function pp_register_html() {
+  }
+  public static function pp_register_default_img() {
   }
 }
 
