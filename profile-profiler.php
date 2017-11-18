@@ -33,10 +33,10 @@ class Profile_Profiler {
 
     extract(shortcode_atts(array(
         'name' => '',
-        'img_url' => $default_img,
+        'img_url' => get_template_directory_uri().'/'.$default_img,
     ), $atts));
 
-    $html = str_replace("%img%", get_template_directory_uri()."/".$img_url, $html);
+    $html = str_replace("%img%", $img_url, $html);
     $html = str_replace("%name%", $name, $html);
     $html = str_replace("%profile%", $content, $html);
 
